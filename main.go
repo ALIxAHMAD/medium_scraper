@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
-	"medium_scraper/Infrastructure/articles/scraper"
-	telegrambot "medium_scraper/Interfaces/telegram_bot"
+	"fmt"
+	"medium_scraper/Infrastructure/article/scraper"
+	interfaces "medium_scraper/Interfaces"
+	"medium_scraper/app"
 	"medium_scraper/util/env"
 )
 
@@ -11,13 +12,16 @@ func main() {
 	env.Load(".env")
 
 	config, err := env.ParseConfig()
+
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err.Error())
 	}
 
 	repo := scraper.NewRepo()
 
-	bot := telegrambot.NewTelegramBot(config.BotToken, &repo)
+	appServices := app.NewServices(&repo)
 
-	bot.GetUpdates()
+	interfacesServices := interfaces.NewServices(appServices, config.BotToken)
+
+	interfacesServices.Bot.ServeUpdates()
 }

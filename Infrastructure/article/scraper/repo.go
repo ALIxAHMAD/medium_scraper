@@ -54,6 +54,7 @@ func (r *repo) SearchArticles(SearchText string) ([]entity.Article, error) {
 func scrape(titles *[]string, intros *[]string, search string) chromedp.Tasks {
 	titlesJs := jsGetText(`0`)
 	headersJs := jsGetText(`1`)
+
 	search = strings.ReplaceAll(search, " ", "+")
 	searchMedium := strings.Join([]string{"https://medium.com/search?q=", search}, "")
 	fmt.Println(searchMedium)
