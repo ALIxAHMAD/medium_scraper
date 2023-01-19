@@ -2,6 +2,7 @@ package telegrambot
 
 import (
 	"fmt"
+	"log"
 	"medium_scraper/app"
 	articleCommands "medium_scraper/app/article/commands"
 
@@ -16,7 +17,7 @@ type Bot struct {
 func NewBot(token string, services app.Services) Bot {
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	bot.Debug = true
 
@@ -64,6 +65,7 @@ func (t Bot) MessageHandler(message tgbotapi.Message) {
 	)
 	if err != nil {
 		t.SendMessage(message.Chat.ID, "Something went wrong")
+		return
 	}
 	for _, article := range result.Articles {
 		articleMessage := (article.Title + "\n" + "\n" + article.Intro)

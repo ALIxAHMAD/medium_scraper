@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"medium_scraper/Infrastructure/article/scraper"
 	interfaces "medium_scraper/Interfaces"
 	"medium_scraper/app"
@@ -14,7 +14,7 @@ func main() {
 	config, err := env.ParseConfig()
 
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err)
 	}
 
 	repo := scraper.NewRepo()
