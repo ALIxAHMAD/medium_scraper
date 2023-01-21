@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	RedisUrl string `env:"redis_url"`
 	BotToken string `env:"bot_token"`
 }
 
