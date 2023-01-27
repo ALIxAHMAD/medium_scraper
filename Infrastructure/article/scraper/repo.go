@@ -69,7 +69,7 @@ func scrape(titles *[]string, intros *[]string, search string) chromedp.Tasks {
 func jsGetText(sel string) (js string) {
 	const funcJS = `function getText(sel) {
 		var text = [];
-		var elements = document.body.querySelectorAll("div.l.ci.jv div.l a.ad.ae.af.ag.ah.ai.aj.ak.al.am.an.ao.ap.aq.ar");
+		var elements = document.body.querySelectorAll("div.l.cj.jv div.l a.ae.af.ag.ah.ai.aj.ak.al.am.an.ao.ap.aq.ar.as");
 
 		for(var i = 0; i < elements.length; i++) {
 			var current = elements[i];

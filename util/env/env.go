@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	RedisUrl string `env:"redis_url"`
-	BotToken string `env:"bot_token"`
+	RedisUrl      string `env:"redis_url"`
+	BotToken      string `env:"bot_token"`
+	RedisPassword string `env:"redis_password"`
 }
 
 func Load(path string) error {

@@ -21,7 +21,7 @@ func main() {
 
 	repo := scraper.NewRepo()
 
-	db := redisdb.NewRepo(config.RedisUrl, "")
+	db := redisdb.NewRepo(config.RedisUrl, config.RedisPassword)
 	fmt.Println("connected to database")
 
 	appServices := app.NewServices(&repo)
