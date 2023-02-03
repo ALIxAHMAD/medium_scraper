@@ -52,35 +52,39 @@ func (r *repo) SearchArticles(SearchText string) ([]entity.Article, error) {
 }
 
 func scrape(titles *[]string, intros *[]string, search string) chromedp.Tasks {
-	titlesJs := jsGetText(`0`)
-	headersJs := jsGetText(`1`)
-
 	search = strings.ReplaceAll(search, " ", "+")
 	searchMedium := strings.Join([]string{"https://medium.com/search?q=", search}, "")
 	fmt.Println(searchMedium)
 
 	return chromedp.Tasks{
 		chromedp.Navigate(searchMedium),
-		chromedp.Evaluate(titlesJs, &titles),
-		chromedp.Evaluate(headersJs, &intros),
+		chromedp.Evaluate(titleJsText, &titles),
+		chromedp.Evaluate(introsJsText, &intros),
 	}
 }
 
-func jsGetText(sel string) (js string) {
-	const funcJS = `function getText(sel) {
-		var text = [];
-		var elements = document.body.querySelectorAll("div.l.cj.jv div.l a.ae.af.ag.ah.ai.aj.ak.al.am.an.ao.ap.aq.ar.as");
+var (
+	titleJsText string = `
+	function getText(){
+	  var docs = document.querySelectorAll('h2')
+	  var filteredDocs = []
+	  for (let index = 0; index < 10; index++) {
+		filteredDocs.push(docs[index].textContent)
+	  }
+	return filteredDocs
+	};
+	var a = getText(); a;
+	`
 
-		for(var i = 0; i < elements.length; i++) {
-			var current = elements[i];
-			
-			// Check the element has no children && that it is not empty
-				text.push(current.children[sel].children[0].textContent);
-			
-		}
-		return text
-	 };`
-
-	invokeFuncJS := `var a = getText('` + sel + `'); a;`
-	return strings.Join([]string{funcJS, invokeFuncJS}, " ")
-}
+	introsJsText string = `
+	function getText(){
+	  var docs = document.querySelectorAll('div > div > a > div > p')
+	  var filteredDocs = []
+      for (let index = 0; index < 10; index++) {
+      filteredDocs.push(docs[index].textContent)
+      }
+	return filteredDocs
+    };
+	var a = getText(); a;
+	`
+)

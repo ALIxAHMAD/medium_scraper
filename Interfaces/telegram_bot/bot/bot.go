@@ -112,7 +112,7 @@ func (t Bot) commandHandler(message tgbotapi.Message) {
 	case "start":
 		t.startCommandHandler(message)
 	case "search":
-		t.searhcCommandHandler(message)
+		t.searchCommandHandler(message)
 	default:
 		t.sendMessage(message.Chat.ID, "Invalid command")
 	}
@@ -150,7 +150,7 @@ func (t Bot) newUserCheck(message tgbotapi.Message) (bool, error) {
 	return isNew, nil
 }
 
-func (t Bot) searhcCommandHandler(message tgbotapi.Message) {
+func (t Bot) searchCommandHandler(message tgbotapi.Message) {
 	chatId := message.Chat.ID
 	_, err := t.newUserCheck(message)
 	if err != nil {
@@ -171,5 +171,5 @@ func (t Bot) sendErrorMessage(chatId int64) {
 
 var welcomeMessage string = ("Hi there \n" +
 	"Welcome to Medium scraper telegram bot \n" +
-	"This bot is still under development \n" +
-	"/search to search medium for some articles \n")
+	"This bot is still under development \n\n" +
+	"/search-search medium for some articles \n")
