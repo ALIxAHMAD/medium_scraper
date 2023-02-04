@@ -70,6 +70,8 @@ func (t Bot) messageHandler(message tgbotapi.Message) {
 	switch command {
 	case "search":
 		t.searchMessageHandler(message)
+	case "search1":
+		t.getArticleHandler(message)
 	default:
 		t.sendMessage(chatId, welcomeMessage)
 	}
@@ -83,10 +85,53 @@ func (t Bot) sendMessage(chatId int64, message string) {
 	}
 }
 
-func (t Bot) searchMessageHandler(message tgbotapi.Message) {
+func (t Bot) getArticleHandler(message tgbotapi.Message) {
 	chatId := message.Chat.ID
 	command := ""
-	err := t.Db.UpdateUser(chatId, command)
+	m := make(map[string]string)
+	err := t.Db.UpdateUserCommand(chatId, command)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	user, err := t.Db.GetUser(chatId)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	urls := user.LastArticles
+	url := urls[message.Text]
+	if url == "" {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	t.sendMessage(chatId, "Give me a second ....")
+	result, err := t.Services.ArticleService.Commands.GetArticleCommandHandler.Handle(
+		articleCommands.GetArticleCommand{
+			Url: url,
+		},
+	)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	t.sendMessage(chatId, "---------------start---------------")
+	for _, s := range result.Article.Text {
+		t.sendMessage(chatId, s)
+	}
+	t.sendMessage(chatId, "---------------end----------------")
+	err = t.Db.UpdateUserArticles(chatId, m)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+}
+
+func (t Bot) searchMessageHandler(message tgbotapi.Message) {
+	chatId := message.Chat.ID
+	command := "search1"
+	m := make(map[string]string)
+	err := t.Db.UpdateUserCommand(chatId, command)
 	if err != nil {
 		t.sendErrorMessage(chatId)
 		return
@@ -101,10 +146,17 @@ func (t Bot) searchMessageHandler(message tgbotapi.Message) {
 		t.sendErrorMessage(chatId)
 		return
 	}
-	for _, article := range result.Articles {
-		articleMessage := (article.Title + "\n\n" + article.Intro)
+	for i, article := range result.Articles {
+		articleMessage := ("number:" + fmt.Sprint(i) + "\n" + article.Title + "\n\n" + article.Intro)
+		m[fmt.Sprint(i)] = article.Url
 		t.sendMessage(message.Chat.ID, articleMessage)
 	}
+	err = t.Db.UpdateUserArticles(chatId, m)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	t.sendMessage(chatId, "chose article by sending it`s number")
 }
 
 func (t Bot) commandHandler(message tgbotapi.Message) {
@@ -157,7 +209,7 @@ func (t Bot) searchCommandHandler(message tgbotapi.Message) {
 		t.sendErrorMessage(chatId)
 		return
 	}
-	err = t.Db.UpdateUser(chatId, "search")
+	err = t.Db.UpdateUserCommand(chatId, "search")
 	if err != nil {
 		t.sendErrorMessage(chatId)
 		return

@@ -11,7 +11,7 @@ type SearchArticlesCommand struct {
 }
 
 type SearchArticlesCommandResult struct {
-	Articles []entity.Article
+	Articles []entity.SearchArticle
 }
 
 type SearchArticlesCommandHandler interface {

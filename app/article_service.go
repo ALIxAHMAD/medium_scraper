@@ -7,6 +7,7 @@ import (
 
 type ArticleServiceCommands struct {
 	SearchArticlesCommandHandler commands.SearchArticlesCommandHandler
+	GetArticleCommandHandler     commands.GetArticleCommandHandler
 }
 
 type ArticleService struct {
@@ -19,6 +20,7 @@ func NewArticleService(
 	return ArticleService{
 		ArticleServiceCommands{
 			SearchArticlesCommandHandler: commands.NewSearchArticlesCommandHandler(articleRepo),
+			GetArticleCommandHandler:     commands.NewGetArticleCommandHandler(articleRepo),
 		},
 	}
 }
