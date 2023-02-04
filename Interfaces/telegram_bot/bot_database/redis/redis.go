@@ -64,12 +64,26 @@ func (r repo) GetUser(chatId int64) (*botdatabase.User, error) {
 	return user, nil
 }
 
-func (r repo) UpdateUser(chatId int64, command string) error {
+func (r repo) UpdateUserCommand(chatId int64, command string) error {
 	user, err := r.GetUser(chatId)
 	if err != nil {
 		return err
 	}
 	user.LastCommand = command
+	body, err := json.Marshal(user)
+	if err != nil {
+		return err
+	}
+	result := r.rdb.Set(fmt.Sprint(chatId), body, 0)
+	return result.Err()
+}
+
+func (r repo) UpdateUserArticles(chatId int64, articles map[string]string) error {
+	user, err := r.GetUser(chatId)
+	if err != nil {
+		return err
+	}
+	user.LastArticles = articles
 	body, err := json.Marshal(user)
 	if err != nil {
 		return err
