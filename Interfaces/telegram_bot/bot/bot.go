@@ -156,7 +156,7 @@ func (t Bot) searchMessageHandler(message tgbotapi.Message) {
 		t.sendErrorMessage(chatId)
 		return
 	}
-	t.sendMessage(chatId, "chose article by sending it`s number")
+	t.sendMessage(chatId, "chose article by sending it`s number \n /cancel-for cancelling the operation")
 }
 
 func (t Bot) commandHandler(message tgbotapi.Message) {
@@ -165,6 +165,8 @@ func (t Bot) commandHandler(message tgbotapi.Message) {
 		t.startCommandHandler(message)
 	case "search":
 		t.searchCommandHandler(message)
+	case "cancel":
+		t.cancelCommandHandler(message)
 	default:
 		t.sendMessage(message.Chat.ID, "Invalid command")
 	}
@@ -202,6 +204,30 @@ func (t Bot) newUserCheck(message tgbotapi.Message) (bool, error) {
 	return isNew, nil
 }
 
+func (t Bot) cancelCommandHandler(message tgbotapi.Message) {
+	chatId := message.Chat.ID
+	_, err := t.newUserCheck(message)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	user, err := t.Db.GetUser(chatId)
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	err = t.Db.UpdateUserCommand(chatId, "")
+	if err != nil {
+		t.sendErrorMessage(chatId)
+		return
+	}
+	if user.LastCommand == "" {
+		t.sendMessage(chatId, "No active command to cancel. I wasn't doing anything anyway.\nZzzzz...")
+		return
+	}
+	t.sendMessage(chatId, "Canceled")
+}
+
 func (t Bot) searchCommandHandler(message tgbotapi.Message) {
 	chatId := message.Chat.ID
 	_, err := t.newUserCheck(message)
@@ -221,7 +247,9 @@ func (t Bot) sendErrorMessage(chatId int64) {
 	t.sendMessage(chatId, "Something went wrong")
 }
 
+// This bot is under development for ever :)
 var welcomeMessage string = ("Hi there \n" +
 	"Welcome to Medium scraper telegram bot \n" +
 	"This bot is still under development \n\n" +
-	"/search-search medium for some articles \n")
+	"/search-search medium for some articles \n" +
+	"/cancel-cancelling any running operation")
