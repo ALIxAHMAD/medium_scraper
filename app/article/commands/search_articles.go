@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"medium_scraper/domain/entity"
 	"medium_scraper/domain/repository"
+	"strings"
 )
 
 type SearchArticlesCommand struct {
@@ -41,7 +42,10 @@ func (h searchArticlesCommandHandler) Handle(
 	*SearchArticlesCommandResult,
 	error,
 ) {
-	articles, err := h.repo.SearchArticles(command.SearchText)
+	command.SearchText = strings.ReplaceAll(command.SearchText, " ", "+")
+	searchMedium := strings.Join([]string{"https://medium.com/search?q=", command.SearchText}, "")
+	fmt.Println("command SearchArticles from URL: ", searchMedium)
+	articles, err := h.repo.SearchArticles(searchMedium)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err

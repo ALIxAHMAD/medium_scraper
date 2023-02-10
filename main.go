@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"medium_scraper/Infrastructure/article/scraper"
-	interfaces "medium_scraper/Interfaces"
-	redisdb "medium_scraper/Interfaces/telegram_bot/bot_database/redis"
 	"medium_scraper/app"
+	interfaces "medium_scraper/inputports"
+	redisdb "medium_scraper/inputports/telegram_bot/bot_database/redis"
+	"medium_scraper/interfaceadapters/article/scraper"
 	"medium_scraper/util/env"
 )
 

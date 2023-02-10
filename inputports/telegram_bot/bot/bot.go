@@ -3,9 +3,9 @@ package telegrambot
 import (
 	"fmt"
 	"log"
-	botdatabase "medium_scraper/Interfaces/telegram_bot/bot_database"
 	"medium_scraper/app"
 	articleCommands "medium_scraper/app/article/commands"
+	botdatabase "medium_scraper/inputports/telegram_bot/bot_database"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )

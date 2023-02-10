@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	botdatabase "medium_scraper/Interfaces/telegram_bot/bot_database"
+	botdatabase "medium_scraper/inputports/telegram_bot/bot_database"
 
 	"github.com/go-redis/redis"
 )

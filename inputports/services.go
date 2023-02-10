@@ -1,9 +1,9 @@
 package interfaces
 
 import (
-	telegrambot "medium_scraper/Interfaces/telegram_bot/bot"
-	botdatabase "medium_scraper/Interfaces/telegram_bot/bot_database"
 	"medium_scraper/app"
+	telegrambot "medium_scraper/inputports/telegram_bot/bot"
+	botdatabase "medium_scraper/inputports/telegram_bot/bot_database"
 )
 
 type Services struct {

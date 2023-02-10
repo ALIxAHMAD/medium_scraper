@@ -38,7 +38,9 @@ func (h getArticleCommandHandler) Handle(
 	*GetArticleCommandResult,
 	error,
 ) {
-	article, err := h.repo.GetArticle(command.Url)
+	url := ("https://medium.com" + command.Url)
+	fmt.Println("command GetArticle from URL: ", url)
+	article, err := h.repo.GetArticle(url)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err

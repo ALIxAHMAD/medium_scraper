@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"medium_scraper/domain/entity"
-	"strings"
 
 	"github.com/chromedp/chromedp"
 )
@@ -71,20 +70,17 @@ func (r *repo) GetArticle(url string) (*entity.Article, error) {
 	return &article, nil
 }
 
-func scrapeArticle(text *[]string, url string) chromedp.Tasks {
-	url = ("https://medium.com" + url)
+func scrapeArticle(text *[]string, articleUrl string) chromedp.Tasks {
 	return chromedp.Tasks{
-		chromedp.Navigate(url),
+		chromedp.Navigate(articleUrl),
 		chromedp.Evaluate(articleJsText, text),
 	}
 }
 
-func scrapeArticles(titles *[]string, intros *[]string, urls *[]string, search string) chromedp.Tasks {
-	search = strings.ReplaceAll(search, " ", "+")
-	searchMedium := strings.Join([]string{"https://medium.com/search?q=", search}, "")
+func scrapeArticles(titles *[]string, intros *[]string, urls *[]string, searchUrl string) chromedp.Tasks {
 
 	return chromedp.Tasks{
-		chromedp.Navigate(searchMedium),
+		chromedp.Navigate(searchUrl),
 		chromedp.Evaluate(titleJsText, &titles),
 		chromedp.Evaluate(introsJsText, &intros),
 		chromedp.Evaluate(urlsJsText, &urls),
